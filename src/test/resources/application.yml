@@ -1,0 +1,4 @@
+filter:
+  adminUrl: /admin/filter
+  issuer: test-issuer
+  secret: ac223c12-1ebc-44b6-b73f-fa3bf972a5e1-e681c879-a699-4afa-bb90-b8cf39d45beb

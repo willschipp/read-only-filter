@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -16,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.Filter;
 import java.util.Collection;
 import java.util.Map;
 
@@ -34,9 +34,6 @@ public class ReadOnlyFilterTest {
     WebApplicationContext context;
 
     @Autowired
-    Filter readOnlyFilter;
-
-    @Autowired
     SimpleModelRepository repository;
 
     @Autowired
@@ -46,10 +43,10 @@ public class ReadOnlyFilterTest {
 
     @Before
     public void before() throws Exception {
-        mvc = webAppContextSetup(context).addFilters(readOnlyFilter).build();
+        mvc = webAppContextSetup(context).addFilters(context.getBean(FilterRegistrationBean.class).getFilter()).build();
         repository.deleteAllInBatch();
         //reset the filter
-        ((ReadOnlyFilter) readOnlyFilter).setReadOnly(false);
+        ((ReadOnlyFilter) context.getBean(FilterRegistrationBean.class).getFilter()).setReadOnly(false);
     }
 
 
@@ -128,7 +125,7 @@ public class ReadOnlyFilterTest {
     @Test
     public void testActiveFilterNoPost() throws Exception {
         //activate the setting for the filter
-        ((ReadOnlyFilter) readOnlyFilter).setReadOnly(true);
+        ((ReadOnlyFilter) context.getBean(FilterRegistrationBean.class).getFilter()).setReadOnly(true);
         //make a POST to the service
         SimpleModel model = new SimpleModel();
         model.setName("model 1");

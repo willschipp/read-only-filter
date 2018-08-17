@@ -1,0 +1,15 @@
+resources:
+- name: source-code
+  type: git
+  source:
+    uri: https://github.com/willschipp/read-only-filter.git
+    branch: remote-activation
+
+jobs:
+- name: package
+  plan:
+  - get: source-code
+    trigger: true
+  - task: package
+    privileged: true
+    file: source-code/concourse/tasks/package.yml
